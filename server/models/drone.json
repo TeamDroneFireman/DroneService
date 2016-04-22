@@ -1,0 +1,32 @@
+{
+  "name": "Drone",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "_id": {
+      "type": "string"
+    },
+    "battery": {
+      "type": "number"
+    },
+    "type": {
+      "type": "string",
+      "required": true,
+      "default": "Drone"
+    },
+    "currentPosition": {
+      "type": "object",
+      "required": true
+    },
+    "missions": {
+      "type": "array"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
