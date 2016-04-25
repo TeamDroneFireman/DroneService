@@ -1,8 +1,14 @@
 module.exports = function(Drone) {
-Drone.disableRemoteMethod('create', true);                // Removes (POST) /products
-Drone.disableRemoteMethod('upsert', true);                // Removes (PUT) /products
-Drone.disableRemoteMethod('deleteById', true);            // Removes (DELETE) /products/:id
-Drone.disableRemoteMethod("updateAll", true);               // Removes (POST) /products/update
-Drone.disableRemoteMethod("updateAttributes", false);       // Removes (PUT) /products/:id
-Drone.disableRemoteMethod('createChangeStream', true);    // removes (GET|POST) /products/change-stream
+  // Removes (POST) /products
+  Drone.disableRemoteMethod('create', true);
+  // Removes (PUT) /products
+  Drone.disableRemoteMethod('upsert', true);
+  // Removes (DELETE) /products/:id
+  Drone.disableRemoteMethod('deleteById', true);
+  // Removes (POST) /products/update
+  Drone.disableRemoteMethod('updateAll', true);
+  // Removes (PUT) /products/:id
+  Drone.disableRemoteMethod('updateAttributes', false);
+  // removes (GET|POST) /products/change-stream
+  Drone.disableRemoteMethod('createChangeStream', true);
 };
