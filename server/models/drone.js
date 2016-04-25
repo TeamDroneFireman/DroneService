@@ -13,7 +13,7 @@ module.exports = function(Drone) {
    * @param id
    * @param callback
      */
-  Drone.getByIntervention= function(id, callback) {
+  Drone.getByIntervention = function(id, callback) {
     Drone.find({ where: {intervention: id} }, function(err, drones) {
       callback(null, drones);
     })
@@ -22,15 +22,40 @@ module.exports = function(Drone) {
   Drone.remoteMethod(
     'getByIntervention',
     {
-      http: {path: '/intervention/:id', verb: 'get'},
+      http: {path: '/idIntervention/:id', verb: 'get'},
       accepts: {arg: 'id', type: 'number', required: true},
       returns: {type: 'array', root: true}
     }
   );
 
   //TODO add remote method missionCall
+  Drone.setMission = function(id, callback) {
+
+  };
+
+  Drone.remoteMethod(
+    'setMission',
+    {
+      http: {path: '/:id/mission/', verb: 'put'},
+      accepts: {arg: 'mission', type: 'object', http: {source: 'body'}},
+      returns: {type: 'array', root: true}
+    }
+  );
 
   //TODO add sanitizing before methods
 
-  //TODO add auth before methods
+  //TODO add auth before all methods
+  Drone.beforeRemote('*', function(ctx, unused, next) {
+    Drone.app.datasources.auth
+      .checkAuth(ctx.req.headers.userid, ctx.req.headers.token,
+        function (err, response) {
+          if (err || response.error || response.id !== ctx.req.headers.token) {
+            var e = new Error('You must be logged in to access database');
+            e.status = 401;
+            next(e);
+          } else {
+            next();
+          }
+        });
+  });
 };

@@ -6,18 +6,22 @@
     "validateUpsert": true
   },
   "properties": {
-    "intervention":{
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "idIntervention":{
       "type":"number"
     },
     "battery": {
       "type": "number"
     },
-    "status": {
+    "state": {
       "type": "string",
       "required": true,
       "default": "idle"
     },
-    "currentPosition": {
+    "location": {
       "type": "object",
       "required": true
     },
