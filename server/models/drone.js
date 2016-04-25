@@ -1,6 +1,6 @@
 module.exports = function(Drone) {
   // Removes (POST) /products
-  Drone.disableRemoteMethod('create', true);
+  Drone.disableRemoteMethod('create', false);
   // Removes (PUT) /products
   Drone.disableRemoteMethod('upsert', true);
   // Removes (DELETE) /products/:id
