@@ -6,6 +6,9 @@
     "validateUpsert": true
   },
   "properties": {
+    "intervention":{
+      "type":"number"
+    },
     "battery": {
       "type": "number"
     },
