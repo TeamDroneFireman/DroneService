@@ -11,4 +11,4 @@ This is the API service concerning the Drone object
 ##API path
 
 There is all the path provided by this service
-- GET  ...
+- GET

@@ -44,9 +44,8 @@ module.exports = function(Drone) {
 
   //TODO add sanitizing before methods
 
-  //TODO add auth before all methods
   Drone.beforeRemote('*', function(ctx, unused, next) {
-    Drone.app.datasources.auth
+    Drone.app.datasources.UserService
       .checkAuth(ctx.req.headers.userid, ctx.req.headers.token,
         function (err, response) {
           if (err || response.error || response.id !== ctx.req.headers.token) {
