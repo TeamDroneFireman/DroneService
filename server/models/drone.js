@@ -44,7 +44,7 @@ module.exports = function(Drone) {
 
   //TODO add sanitizing before methods
 
-  //TODO add auth before all methods
+/*
   Drone.beforeRemote('*', function(ctx, unused, next) {
     Drone.app.datasources.auth
       .checkAuth(ctx.req.headers.userid, ctx.req.headers.token,
@@ -58,4 +58,5 @@ module.exports = function(Drone) {
           }
         });
   });
+*/
 };
