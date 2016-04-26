@@ -22,7 +22,7 @@ module.exports = function(Drone) {
   Drone.remoteMethod(
     'getByIntervention',
     {
-      http: {path: '/idIntervention/:id', verb: 'get'},
+      http: {path: '/intervention/:id', verb: 'get'},
       accepts: {arg: 'id', type: 'number', required: true},
       returns: {type: 'array', root: true}
     }
