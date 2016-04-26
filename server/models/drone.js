@@ -16,7 +16,7 @@ module.exports = function(Drone) {
   Drone.getByIntervention = function(id, callback) {
     Drone.find({ where: {intervention: id} }, function(err, drones) {
       callback(null, drones);
-    })
+    });
   };
 
   Drone.remoteMethod(
