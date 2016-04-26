@@ -22,7 +22,7 @@ module.exports = function(Drone) {
   Drone.remoteMethod(
     'getByIntervention',
     {
-      http: {path: '/idIntervention/:id', verb: 'get'},
+      http: {path: '/intervention/:id', verb: 'get'},
       accepts: {arg: 'id', type: 'number', required: true},
       returns: {type: 'array', root: true}
     }
@@ -46,7 +46,7 @@ module.exports = function(Drone) {
 
 /*
   Drone.beforeRemote('*', function(ctx, unused, next) {
-    Drone.app.datasources.auth
+    Drone.app.datasources.UserService
       .checkAuth(ctx.req.headers.userid, ctx.req.headers.token,
         function (err, response) {
           if (err || response.error || response.id !== ctx.req.headers.token) {
