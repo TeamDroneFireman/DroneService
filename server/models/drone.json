@@ -14,14 +14,9 @@
       "type":"number",
       "required": true
     },
-    "battery": {
-      "type": "number",
+    "states": {
+      "type": "object",
       "required": true
-    },
-    "state": {
-      "type": "string",
-      "required": true,
-      "default": "idle"
     },
     "location": {
       "type": "object",
