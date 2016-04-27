@@ -1,6 +1,7 @@
 module.exports = function(Drone) {
 
-  const DRONE_SCRIPTS_URL = "/home/kozhaa/Master2/project/DroneKit/mission_boucle.py";
+  const DRONE_SCRIPTS_URL =
+    '/home/kozhaa/Master2/project/DroneKit/mission_boucle.py';
 
   // Removes (DELETE) /products/:id
   Drone.disableRemoteMethod('deleteById', true);
@@ -37,17 +38,18 @@ module.exports = function(Drone) {
      */
   Drone.setMission = function(id, mission, callback) {
 
-    Drone.updateAll({"id" : id}, {"mission" : mission}, function(err, drone){
+    Drone.updateAll({'id' : id}, {'mission' : mission}, function(err, drone){
       // get drone state from update response
-      // call mission manager in order to launch the mission (initialize if needed, based on state)
+      // call mission manager in order to launch the mission
+      // (initialize if needed, based on state)
       const spawn = require('child_process').spawn;
-      var arguments = [DRONE_SCRIPTS_URL, "--mission"];
+      var argts = [DRONE_SCRIPTS_URL, '--mission'];
       for(var point in mission.poi){
-        arguments.push(mission.poi[point].x);
-        arguments.push(mission.poi[point].y);
-        arguments.push(mission.poi[point].z);
+        argts.push(mission.poi[point].x);
+        argts.push(mission.poi[point].y);
+        argts.push(mission.poi[point].z);
       }
-      const mission_script = spawn('python', arguments);
+      const missionScript = spawn('python', argts);
       callback(null, drone);
     });
   };
