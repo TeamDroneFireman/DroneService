@@ -12,11 +12,7 @@
     },
     "intervention":{
       "type":"number",
-<<<<<<< HEAD
-      "required":true
-=======
       "required": true
->>>>>>> cdc1d36ebfc951a6d31e4970eac07706ae54d9a6
     },
     "battery": {
       "type": "number",
