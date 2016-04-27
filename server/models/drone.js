@@ -17,7 +17,7 @@ module.exports = function(Drone) {
   Drone.getByIntervention = function(id, callback) {
     Drone.find({ where: {intervention: id} }, function(err, drones) {
       callback(null, drones);
-    })
+    });
   };
 
   Drone.remoteMethod(
@@ -67,9 +67,9 @@ module.exports = function(Drone) {
   /***
    * auth required before all methods
    */
-  /*
+/*
   Drone.beforeRemote('*', function(ctx, unused, next) {
-    Drone.app.datasources.auth
+    Drone.app.datasources.UserService
       .checkAuth(ctx.req.headers.userid, ctx.req.headers.token,
         function (err, response) {
           if (err || response.error || response.id !== ctx.req.headers.token) {

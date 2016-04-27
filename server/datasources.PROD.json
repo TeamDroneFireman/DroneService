@@ -7,5 +7,23 @@
     "password": "",
     "name": "mongodb_prod",
     "connector": "mongodb"
+  },
+  "userService": {
+    "connector": "rest",
+    "debug": "false",
+    "operations": [{
+      "template": {
+        "method": "GET",
+        "url": "http://projetm2gla.istic.univ-rennes1.fr/api/SITUsers/{userId}/accessTokens/{token}",
+        "headers": {
+          "accepts": "application/json",
+          "content-type": "application/json",
+          "Host": "user.docker.localhost"
+        }
+      },
+      "functions": {
+        "checkAuth": ["userId", "token"]
+      }
+    }]
   }
 }
