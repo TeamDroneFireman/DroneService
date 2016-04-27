@@ -10,8 +10,9 @@
       "type": "string",
       "required": true
     },
-    "idIntervention":{
-      "type":"number"
+    "intervention":{
+      "type":"number",
+      "required":true
     },
     "battery": {
       "type": "number"
