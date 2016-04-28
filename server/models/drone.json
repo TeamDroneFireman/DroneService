@@ -7,31 +7,27 @@
   },
   "properties": {
     "name": {
-      "type": "String",
+      "type": "string",
       "required": true
     },
     "intervention":{
-      "type":"Number",
-      "required": true
-    },
-    "battery": {
-      "type": "Number",
+      "type":"number",
       "required": true
     },
     "states": {
-      "type": "Object",
+      "type": "object",
       "required": true
     },
     "role": {
-      "type": "String",
+      "type": "string",
       "required": true
     },
     "location": {
-      "type": "Object",
+      "type": "object",
       "required": true
     },
     "mission": {
-      "type": "Object"
+      "type": "object"
     }
   },
   "validations": [],
