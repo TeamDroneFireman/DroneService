@@ -24,8 +24,8 @@ module.exports = function(Drone) {
     'getByIntervention',
     {
       http: {path: '/intervention/:id', verb: 'get'},
-      accepts: {arg: 'id', type: 'number', required: true},
-      returns: {type: 'array', root: true}
+      accepts: {arg: 'id', type: 'Number', required: true},
+      returns: {type: 'Array', root: true}
     }
   );
 
@@ -57,10 +57,10 @@ module.exports = function(Drone) {
     {
       http: {path: '/:id/mission/', verb: 'put'},
       accepts: [
-        {arg: 'id', type: 'number', required: true},
-        {arg: 'mission', type: 'object', http: {source: 'body'}}
+        {arg: 'id', type: 'Number', required: true},
+        {arg: 'mission', type: 'Object', http: {source: 'body'}}
       ],
-      returns: {type: 'array', root: true}
+      returns: {type: 'Array', root: true}
     }
   );
 
