@@ -14,7 +14,7 @@ module.exports = function(Drone) {
    * return all the drones used in the intervention passed as parameter
    * @param id
    * @param callback
-     */
+   */
   Drone.getByIntervention = function(id, callback) {
     Drone.find({ where: {intervention: id} }, function(err, drones) {
       callback(null, drones);
@@ -35,7 +35,7 @@ module.exports = function(Drone) {
    * @param id
    * @param mission
    * @param callback
-     */
+   */
   Drone.setMission = function(id, mission, callback) {
 
     Drone.updateAll({'id' : id}, {'mission' : mission}, function(err, drone){
@@ -69,20 +69,20 @@ module.exports = function(Drone) {
   /***
    * auth required before all methods
    */
-/*
-  Drone.beforeRemote('*', function(ctx, unused, next) {
-    Drone.app.datasources.UserService
-      .checkAuth(ctx.req.headers.userid, ctx.req.headers.token,
-        function (err, response) {
-          if (err || response.error || response.id !== ctx.req.headers.token) {
-            var e = new Error('You must be logged in to access database');
-            e.status = 401;
-            next(e);
-          } else {
-            next();
-          }
-        });
-  });
-  */
+  /*
+   Drone.beforeRemote('*', function(ctx, unused, next) {
+   Drone.app.datasources.UserService
+   .checkAuth(ctx.req.headers.userid, ctx.req.headers.token,
+   function (err, response) {
+   if (err || response.error || response.id !== ctx.req.headers.token) {
+   var e = new Error('You must be logged in to access database');
+   e.status = 401;
+   next(e);
+   } else {
+   next();
+   }
+   });
+   });
+   */
   //TODO add sanitizing body obj before each methods
 };
