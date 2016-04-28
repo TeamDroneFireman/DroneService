@@ -14,24 +14,17 @@
       "type":"Number",
       "required": true
     },
-<<<<<<< HEAD
     "battery": {
       "type": "Number",
       "required": true
     },
-    "state": {
-      "type": "String",
-      "required": true,
-      "default": "idle"
-=======
     "states": {
-      "type": "object",
+      "type": "Object",
       "required": true
     },
     "role": {
-      "type": "string",
+      "type": "String",
       "required": true
->>>>>>> b421b2bf093f4a0ba4fabe8b6bdb949986fbc700
     },
     "location": {
       "type": "Object",
