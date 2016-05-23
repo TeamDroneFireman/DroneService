@@ -1,7 +1,7 @@
-FROM ubuntu
+FROM ubuntu:14.04
 MAINTAINER thuchede
 
-RUN apt-get update && apt-get -y install curl python-dev python-pip python-opencv python-wxgtk && pip install dronekit-sitl MAVProxy
+RUN apt-get update && apt-get -y install curl python-dev python-pip python-opencv python-wxgtk2.8 && pip install dronekit-sitl MAVProxy
 
 RUN curl -sL https://deb.nodesource.com/setup_5.x | sudo bash -
 RUN apt-get install -y nodejs
