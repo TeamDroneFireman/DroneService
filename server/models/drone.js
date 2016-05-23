@@ -4,7 +4,7 @@ module.exports = function(Drone) {
     '/home/kozhaa/Master2/project/DroneKit/mission_boucle.py';
 
   // Removes (DELETE) /products/:id
-  //Drone.disableRemoteMethod('deleteById', true);
+  Drone.disableRemoteMethod('deleteById', true);
   // Removes (POST) /products/update
   Drone.disableRemoteMethod('updateAll', true);
   // removes (GET|POST) /products/change-stream
