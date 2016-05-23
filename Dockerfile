@@ -11,4 +11,4 @@ ADD . /app
 RUN npm install
 EXPOSE 3000
 # launch should be done using : -e NODE_ENV=XXX
-ENTRYPOINT [ "nodejs", "." ]
+ENTRYPOINT [ "node", "." ]
