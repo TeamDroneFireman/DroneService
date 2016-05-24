@@ -66,6 +66,8 @@ module.exports = function(Drone) {
     }
   );
 
+//TODO override put method in case of states changing (start new simulator in case of arrived state)
+
   /***
    * auth required before all methods
    */
