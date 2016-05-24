@@ -9,7 +9,7 @@
     "operations": [{
       "template": {
         "method": "GET",
-        "url": "http://projetm2gla.istic.univ-rennes1.fr/api/SITUsers/{userId}/accessTokens/{token}",
+        "url": "http://localhost:3000/api/SITUsers/{userId}/accessTokens/{token}",
         "headers": {
           "accepts": "application/json",
           "content-type": "application/json",
