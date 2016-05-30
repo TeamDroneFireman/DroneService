@@ -11,9 +11,10 @@ module.exports = function(Drone) {
     var model = ctx.args.data;
     var rePattern = new RegExp(/(.*?)\s*?(\d+)?$/);
     var str = model.name.replace(rePattern, '$1');
-    Drone.count({intervention: model.intervention, name: {like: str} }, function(err, res){
-      model.name = model.name + ' ' + (res+1);
-      next();
+    Drone.count({intervention: model.intervention, name: {like: str} },
+      function(err, res){
+        model.name = model.name + ' ' + (res+1);
+        next();
     });
   });
 
