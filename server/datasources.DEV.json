@@ -1,11 +1,29 @@
 {
   "mongodb_dev": {
-    "host": "localhost",
+    "host": "mongo",
     "port": 27017,
     "database": "mongo-db1",
     "username": "admin",
     "password": "",
     "name": "mongodb_dev",
     "connector": "mongodb"
+  },
+  "userService": {
+    "connector": "rest",
+    "debug": "false",
+    "operations": [{
+      "template": {
+        "method": "GET",
+        "url": "http://devprojetm2gla.istic.univ-rennes1.fr/api/SITUsers/{userId}/accessTokens/{token}",
+        "headers": {
+          "accepts": "application/json",
+          "content-type": "application/json",
+          "Host": "user.docker.localhost"
+        }
+      },
+      "functions": {
+        "checkAuth": ["userId", "token"]
+      }
+    }]
   }
 }

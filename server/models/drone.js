@@ -25,6 +25,22 @@ module.exports = function(Drone) {
    });
    */
 
+
+   /**
+    * save the drone with a numbered name
+    * each number is specific for a name and intervention
+    */
+   Drone.beforeRemote('create', function(ctx, unused, next){
+     var model = ctx.args.data;
+     var rePattern = new RegExp(/(.*?)\s*?(\d+)?$/);
+     var str = model.name.replace(rePattern, '$1');
+     Drone.count({intervention: model.intervention, name: {like: str} },
+       function(err, res){
+         model.name = model.name + ' ' + (res+1);
+         next();
+     });
+   });
+
   /**
    * return all the drones used in the intervention passed as parameter
    * @param id
@@ -53,7 +69,6 @@ module.exports = function(Drone) {
    * @param callback
    */
   Drone.setMission = function(id, mission, callback) {
-
     Drone.updateAll(
     {'id' : id},
     {'mission' : mission},
@@ -105,6 +120,21 @@ module.exports = function(Drone) {
      console.log(argts);
      next();
    }
+  );
+
+  Drone.getAskedDronesByIntervention = function (id,callback) {
+    Drone.find({ where: {and: [{intervention: id}, {currentState: 'ASKED'}]} },
+      function(err, drones) {
+        console.log(drones);
+        callback(null, drones);
+      });
+  };
+
+  Drone.remoteMethod('getAskedDronesByIntervention', {
+      http: {path: '/intervention/:id/asked/', verb: 'get'},
+      accepts: {arg: 'id', type: 'string', required: true},
+      returns: {type: 'array', root: true}
+    }
   );
 
   /***
