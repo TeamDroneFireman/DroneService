@@ -83,7 +83,10 @@ module.exports = function(Drone) {
       //TODO add area mission handling
 
       const missionScript = spawn('python', argts);
-      callback(null, drone);
+
+      Drone.findById(id, function(err, instance){
+        callback(err,instance);
+      });
     });
   };
 
