@@ -20,5 +20,26 @@
         "checkAuth": ["userId", "token"]
       }
     }]
+  },
+  "interventionService": {
+    "connector": "rest",
+    "debug": "false",
+    "operations": [{
+      "template": {
+        "method": "POST",
+        "url": "http://projetm2gla.istic.univ-rennes1.fr/api/Interventions/{intervId}/push/",
+        "headers": {
+          "accepts": "application/json",
+          "content-type": "application/json"
+        },
+        "body": {
+          "id": "{id}",
+          "topic": "{topic}"
+        }
+      },
+      "functions": {
+        "push": ["intervId","id","topic"]
+      }
+    }]
   }
 }

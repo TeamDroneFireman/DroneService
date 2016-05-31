@@ -10,6 +10,9 @@
       "type": "string",
       "required": true
     },
+    "currentState":{
+      "type":"string"
+    },
     "intervention":{
       "type":"string",
       "required": true
@@ -20,6 +23,10 @@
     },
     "role": {
       "type": "string",
+      "required": true
+    },
+    "home": {
+      "type": "object",
       "required": true
     },
     "location": {
