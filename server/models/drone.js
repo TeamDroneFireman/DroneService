@@ -100,4 +100,19 @@ module.exports = function(Drone) {
    });
    */
   //TODO add sanitizing body obj before each methods
+
+  Drone.remoteMethod('getAskedDronesByIntervention', {
+      http: {path: '/intervention/:id/asked/', verb: 'get'},
+      accepts: {arg: 'id', type: 'string', required: true},
+      returns: {type: 'array', root: true}
+    }
+  );
+
+  Drone.getAskedDronesByIntervention = function (id,callback) {
+    Drone.find({ where: {and: [{intervention: id}, {currentState: 'ASKED'}]} },
+      function(err, drones) {
+        console.log(drones);
+        callback(null, drones);
+      });
+  };
 };
