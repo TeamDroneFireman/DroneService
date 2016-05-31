@@ -1,7 +1,6 @@
 module.exports = function(Drone) {
 
-  const DRONE_SCRIPTS_URL =
-    '/home/kozhaa/Master2/project/DroneKit/mission_boucle.py';
+  const SIMULATOR_URL = '../../simulator/';
 
   // Removes (DELETE) /products/:id
   Drone.disableRemoteMethod('deleteById', true);
@@ -39,16 +38,17 @@ module.exports = function(Drone) {
   Drone.setMission = function(id, mission, callback) {
 
     Drone.updateAll({'id' : id}, {'mission' : mission}, function(err, drone){
-      // get drone state from update response
-      // call mission manager in order to launch the mission
-      // (initialize if needed, based on state)
       const spawn = require('child_process').spawn;
-      var argts = [DRONE_SCRIPTS_URL, '--mission'];
+
+      //TODO fuse scripts mission_boucle and mission_segment in py scripts
+      var argts = [SIMULATOR_URL + 'mission_segment.py', '--mission'];
       for(var point in mission.poi){
         argts.push(mission.poi[point].x);
         argts.push(mission.poi[point].y);
         argts.push(mission.poi[point].z);
       }
+      //TODO add area mission handling
+
       const missionScript = spawn('python', argts);
       callback(null, drone);
     });
@@ -66,7 +66,24 @@ module.exports = function(Drone) {
     }
   );
 
-//TODO override put method in case of states changing (start new simulator in case of arrived state)
+  /***
+  * start simulator in case of document creation
+  */
+  Drone.beforeRemote(
+   'create',
+   function(ctx, unused, next){
+     const spawn = require('child_process').spawn;
+     var argts = [
+       ctx.req.body.location.geopoint.latitude,
+       ctx.req.body.location.geopoint.longitude,
+       ctx.req.body.location.geopoint.altitude,
+       ctx.req.body.id
+     ];
+     const missionScript =
+      spawn(SIMULATOR_URL + 'add_drone_simulator.sh', argts, {'shell':true});
+     next();
+   }
+  );
 
   /***
    * auth required before all methods
@@ -86,5 +103,4 @@ module.exports = function(Drone) {
    });
    });
    */
-  //TODO add sanitizing body obj before each methods
 };
