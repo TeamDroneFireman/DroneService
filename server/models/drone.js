@@ -242,4 +242,39 @@ module.exports = function(Drone) {
     }
   );
   */
+
+  Drone.afterRemote('create',function (ctx, unused, next) {
+    sendPushMessage(ctx.result, 'Drone/Create');
+    next();
+  });
+
+  Drone.afterRemote('upsert',function (ctx, unused, next) {
+    sendPushMessage(ctx.result, 'Drone/Update');
+    next();
+  });
+
+  Drone.afterRemote('updateAll',function (ctx, unused, next) {
+    sendPushMessage(ctx.result, 'Drone/Update');
+    next();
+  });
+  
+  Drone.afterRemote('deleteById',function (ctx, unused, next) {
+    sendPushMessage(ctx.result, 'Drone/Delete');
+    next();
+  });
+
+  function sendPushMessage(drone,topic){
+    var pushMessage = {
+      idIntervention : drone.intervention,
+      idElement : drone.id,
+      timestamp : Date.now(),
+      topic : topic
+    };
+    var pushService = Drone.app.datasources.pushService;
+    pushService.create(pushMessage, function(err,data){
+      if (err) throw err;
+      if (data.error)
+        next('> response error: ' + err.error.stack);
+    });
+  }
 };
