@@ -21,24 +21,24 @@ app.start = function() {
 boot(app, __dirname, function(err) {
   if (err) throw err;
 
-    //start simulator and mavProxy
-    const spawn = require('child_process').spawn;
-    const simulatorStarter = spawn('dronekit-sitl', [
-      'copter',
-      '--home=',
-      '20,20,20,20'
-    ]);
+  //start simulator and mavProxy
+  const spawn = require('child_process').spawn;
+  const simulatorStarter = spawn('dronekit-sitl', [
+    'copter',
+    '--home=',
+    '20,20,20,20'
+  ]);
 
-    const mavProxyStarter = spawn('mavproxy.py',[
-      '--master',
-      'tcp:127.0.0.1:5760',
-      '--sitl',
-      '127.0.0.1:5501',
-      '--out',
-      '127.0.0.1:14550',
-      '--out',
-      '127.0.0.1:14551'
-    ]);
+  const mavProxyStarter = spawn('mavproxy.py',[
+    '--master',
+    'tcp:127.0.0.1:5760',
+    '--sitl',
+    '127.0.0.1:5501',
+    '--out',
+    '127.0.0.1:14550',
+    '--out',
+    '127.0.0.1:14551'
+  ]);
 
   // start the server if `$ node server.js`
   if (require.main === module)

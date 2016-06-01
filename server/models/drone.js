@@ -128,7 +128,6 @@ module.exports = function(Drone) {
   Drone.getAskedDronesByIntervention = function (id,callback) {
     Drone.find({ where: {and: [{intervention: id}, {currentState: 'ASKED'}]} },
       function(err, drones) {
-        console.log(drones);
         callback(null, drones);
       });
   };

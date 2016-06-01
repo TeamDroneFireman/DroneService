@@ -9,7 +9,7 @@ var bgstart;
 gulp.task('start', bgstart = bg('node', '.'));
 
 gulp.task('test', ['start'], function () {
-  return gulp.src('./test/test.js', {read: true}).pipe(wait(5000))
+  return gulp.src('./test/test.js', {read: true}).pipe(wait(15000))
     .pipe(mocha({
             'reporter': 'mocha-junit-reporter',
             'reporterOptions': {
