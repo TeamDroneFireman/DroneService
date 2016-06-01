@@ -51,40 +51,37 @@
     "operations": [{
       "template": {
         "method": "POST",
-        "url": "{url}",
+        "url": "{url}/create",
         "headers": {
           "accepts": "application/json",
           "content-type": "application/json"
         },
         "body": {
           "instance": "{instance}",
-          "location": "{location}"
+          "home": "{location}"
         }
       },
       "functions": {
         "createDrone": ["url","instance","location"]
       }
-    }]
-  },
-  "simulatorService": {
-    "connector": "rest",
-    "debug": "false",
-    "operations": [{
+    },
+    {
       "template": {
         "method": "POST",
-        "url": "{url}",
+        "url": "{url}/mission",
         "headers": {
           "accepts": "application/json",
           "content-type": "application/json"
         },
         "body": {
+          "id": "{id}",
           "instance": "{instance}",
           "mission": "{mission}",
           "intervention": "{intervention}"
         }
       },
       "functions": {
-        "startMission": ["url","instance","mission","intervention"]
+        "startMission": ["url","id", "instance","mission","intervention"]
       }
     }]
   }

@@ -75,8 +75,7 @@ module.exports = function(Drone) {
    * @param callback
    */
   Drone.setMission = function(id, mission, callback) {
-    Drone.findById(
-    {'id' : id},
+    Drone.findById(id,
     function(err, drone){
       if(err) callback(err,{});
       var jsonfile = require('jsonfile');
@@ -86,8 +85,9 @@ module.exports = function(Drone) {
         Drone.app.datasources.simulatorService
         .startMission(
         obj.flaskUrl,
+        drone.id,
         drone.instance,
-        drone.mission,
+        mission,
         drone.intervention,
         function(err, res){
           callback(err,res);
@@ -115,18 +115,15 @@ module.exports = function(Drone) {
   Drone.afterRemote(
    'create',
   function(ctx, unused, next){
-    Drone.findById(
-    {'id' : ctx.req.body.id},
-    function(err, drone){
-      var jsonfile = require('jsonfile');
-      jsonfile.readFile(
-      SIMULATOR_URL+'config.json',
-      function(err, obj) {
-      Drone.app.datasources.simulatorService
-      .createDrone(obj.flaskUrl, drone.instance, drone.location,
-        function(err, res){
-          next(err,res);
-        });
+    var model = ctx.args.data;
+    var jsonfile = require('jsonfile');
+    jsonfile.readFile(
+    SIMULATOR_URL+'config.json',
+    function(err, obj) {
+    Drone.app.datasources.simulatorService
+    .createDrone(obj.flaskUrl, model.instance, model.home,
+      function(err, res){
+        next(err,res);
       });
     });
   });
@@ -164,7 +161,6 @@ module.exports = function(Drone) {
     sendPushMessage(ctx.result, 'Drone/Delete');
     next();
   });
-
   function sendPushMessage(drone,topic){
     var pushMessage = {
       idIntervention : drone.intervention,
