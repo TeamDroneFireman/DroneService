@@ -3,42 +3,22 @@
     "name": "db",
     "connector": "memory"
   },
-  "userService": {
-    "connector": "rest",
-    "debug": "false",
-    "operations": [{
-      "template": {
-        "method": "GET",
-        "url": "http://localhost:3000/api/SITUsers/{userId}/accessTokens/{token}",
-        "headers": {
-          "accepts": "application/json",
-          "content-type": "application/json",
-          "Host": "user.docker.localhost"
-        }
-      },
-      "functions": {
-        "checkAuth": ["userId", "token"]
-      }
-    }]
-  },
-  "interventionService": {
+  "pushService": {
     "connector": "rest",
     "debug": "false",
     "operations": [{
       "template": {
         "method": "POST",
-        "url": "http://projetm2gla.istic.univ-rennes1.fr/api/Interventions/{intervId}/push/",
+        "url": "http://localhost:3009/api/pushMessages",
         "headers": {
           "accepts": "application/json",
-          "content-type": "application/json"
+          "content-type": "application/json",
+          "Host": "push.docker.localhost"
         },
-        "body": {
-          "id": "{id}",
-          "topic": "{topic}"
-        }
+        "body": "{data}"
       },
       "functions": {
-        "push": ["intervId","id","topic"]
+        "create": ["data"]
       }
     }]
   },
