@@ -35,7 +35,11 @@
     },
     "mission": {
       "type": "object"
+    },
+    "instance": {
+      "type": "number"
     }
+
   },
   "validations": [],
   "relations": {},

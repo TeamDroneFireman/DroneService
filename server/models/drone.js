@@ -1,6 +1,6 @@
 module.exports = function(Drone) {
 
-  const SIMULATOR_URL = '../../simulator/';
+  const SIMULATOR_URL = './simulator/';
 
   Drone.disableRemoteMethod('deleteById', true);
   Drone.disableRemoteMethod('updateAll', true);
@@ -29,6 +29,7 @@ module.exports = function(Drone) {
    /**
     * save the drone with a numbered name
     * each number is specific for a name and intervention
+    * also declare an instance for simulator purpose
     */
    Drone.beforeRemote('create', function(ctx, unused, next){
      var model = ctx.args.data;
@@ -37,7 +38,12 @@ module.exports = function(Drone) {
      Drone.count({intervention: model.intervention, name: {like: str} },
        function(err, res){
          model.name = model.name + ' ' + (res+1);
-         next();
+
+         //Simulator specific code
+         Drone.count(function(err, res){
+           model.instance = res+1;
+           next();
+         });
      });
    });
 
@@ -69,23 +75,23 @@ module.exports = function(Drone) {
    * @param callback
    */
   Drone.setMission = function(id, mission, callback) {
-    Drone.updateAll(
+    Drone.findById(
     {'id' : id},
-    {'mission' : mission},
     function(err, drone){
-      const spawn = require('child_process').spawn;
-      var argts = [SIMULATOR_URL + 'mission.py', '--mission'];
-      for(var point in mission.geopoints){
-        argts.push(mission.geopoints[point].latitude);
-        argts.push(mission.geopoints[point].longitude);
-        argts.push(mission.geopoints[point].altitude);
-      }
-      //TODO add area mission handling
-
-      const missionScript = spawn('python', argts);
-
-      Drone.findById(id, function(err, instance){
-        callback(err,instance);
+      if(err) callback(err,{});
+      var jsonfile = require('jsonfile');
+      jsonfile.readFile(
+      SIMULATOR_URL+'config.json',
+      function(err, obj) {
+        Drone.app.datasources.simulatorService
+        .startMission(
+        obj.flaskUrl,
+        drone.instance,
+        drone.mission,
+        drone.intervention,
+        function(err, res){
+          callback(err,res);
+        });
       });
     });
   };
@@ -108,22 +114,22 @@ module.exports = function(Drone) {
   */
   Drone.afterRemote(
    'create',
-   function(ctx, unused, next){
-     const spawn = require('child_process').spawn;
-     var argts = [
-       'copter',
-       '--home=',
-       ctx.req.body.location.geopoint.latitude+','+
-       ctx.req.body.location.geopoint.longitude+','+
-       ctx.req.body.location.geopoint.altitude+',1',
-       '--intance=',
-       ctx.req.body.id
-     ];
-     const missionScript = spawn('dronekit-sitl', argts);
-     console.log(argts);
-     next();
-   }
-  );
+  function(ctx, unused, next){
+    Drone.findById(
+    {'id' : ctx.req.body.id},
+    function(err, drone){
+      var jsonfile = require('jsonfile');
+      jsonfile.readFile(
+      SIMULATOR_URL+'config.json',
+      function(err, obj) {
+      Drone.app.datasources.simulatorService
+      .createDrone(obj.flaskUrl, drone.instance, drone.location,
+        function(err, res){
+          next(err,res);
+        });
+      });
+    });
+  });
 
   Drone.getAskedDronesByIntervention = function (id,callback) {
     Drone.find({ where: {and: [{intervention: id}, {currentState: 'ASKED'}]} },
