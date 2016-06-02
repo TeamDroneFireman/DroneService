@@ -3,45 +3,6 @@
     "name": "db",
     "connector": "memory"
   },
-  "userService": {
-    "connector": "rest",
-    "debug": "false",
-    "operations": [{
-      "template": {
-        "method": "GET",
-        "url": "http://localhost:3000/api/SITUsers/{userId}/accessTokens/{token}",
-        "headers": {
-          "accepts": "application/json",
-          "content-type": "application/json",
-          "Host": "user.docker.localhost"
-        }
-      },
-      "functions": {
-        "checkAuth": ["userId", "token"]
-      }
-    }]
-  },
-  "interventionService": {
-    "connector": "rest",
-    "debug": "false",
-    "operations": [{
-      "template": {
-        "method": "POST",
-        "url": "http://projetm2gla.istic.univ-rennes1.fr/api/Interventions/{intervId}/push/",
-        "headers": {
-          "accepts": "application/json",
-          "content-type": "application/json"
-        },
-        "body": {
-          "id": "{id}",
-          "topic": "{topic}"
-        }
-      },
-      "functions": {
-        "push": ["intervId","id","topic"]
-      }
-    }]
-  },
   "pushService": {
     "connector": "rest",
     "debug": "false",
@@ -49,10 +10,55 @@
       "template": {
         "method": "POST",
         "url": "http://localhost:3009/api/pushMessages",
+        "headers": {
+          "accepts": "application/json",
+          "content-type": "application/json",
+          "Host": "push.docker.localhost"
+        },
         "body": "{data}"
       },
       "functions": {
         "create": ["data"]
+      }
+    }]
+  },
+  "simulatorService": {
+    "connector": "rest",
+    "debug": "false",
+    "operations": [{
+      "template": {
+        "method": "POST",
+        "url": "{url}/create",
+        "headers": {
+          "accepts": "application/json",
+          "content-type": "application/json"
+        },
+        "body": {
+          "instance": "{instance}",
+          "home": "{location}"
+        }
+      },
+      "functions": {
+        "createDrone": ["url","instance","location"]
+      }
+    },
+    {
+      "template": {
+        "method": "POST",
+        "url": "{url}/mission",
+        "headers": {
+          "accepts": "application/json",
+          "content-type": "application/json"
+        },
+        "body": {
+          "id": "{id}",
+          "instance": "{instance}",
+          "mission": "{mission}",
+          "intervention": "{intervention}"
+        }
+      },
+      "functions": {
+        "startMission": ["url","id", "instance","mission","intervention"]
       }
     }]
   }

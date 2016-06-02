@@ -1,6 +1,6 @@
 module.exports = function(Drone) {
 
-  const SIMULATOR_URL = '../../simulator/';
+  const SIMULATOR_URL = './simulator/';
 
   Drone.disableRemoteMethod('deleteById', true);
   Drone.disableRemoteMethod('updateAll', true);
@@ -29,16 +29,32 @@ module.exports = function(Drone) {
    /**
     * save the drone with a numbered name
     * each number is specific for a name and intervention
+    * also declare an instance for simulator purpose
     */
    Drone.beforeRemote('create', function(ctx, unused, next){
      var model = ctx.args.data;
-     var rePattern = new RegExp(/(.*?)\s*?(\d+)?$/);
-     var str = model.name.replace(rePattern, '$1');
-     Drone.count({intervention: model.intervention, name: {like: str} },
-       function(err, res){
-         model.name = model.name + ' ' + (res+1);
-         next();
-     });
+     var dPattern = new RegExp(/\d+$/);
+    var hasNum = dPattern.test(model.name);
+    if (!hasNum){
+      var rePattern = new RegExp(/(.*?)\s*?(\d+)?$/);
+      var str = model.name.replace(rePattern, '$1');
+      Drone.count({intervention: model.intervention, name: {like: str} },
+        function(err, res){
+          model.name = model.name + ' ' + (res+1);
+
+          //Simulator specific code
+          Drone.count(function(err, res){
+            model.instance = res+1;
+            next();
+          });
+      });
+    } else {
+      //Simulator specific code
+      Drone.count(function(err, res){
+        model.instance = res+1;
+        next();
+      });
+    }
    });
 
   /**
@@ -69,23 +85,23 @@ module.exports = function(Drone) {
    * @param callback
    */
   Drone.setMission = function(id, mission, callback) {
-    Drone.updateAll(
-    {'id' : id},
-    {'mission' : mission},
+    Drone.findById(id,
     function(err, drone){
-      const spawn = require('child_process').spawn;
-      var argts = [SIMULATOR_URL + 'mission.py', '--mission'];
-      for(var point in mission.geopoints){
-        argts.push(mission.geopoints[point].latitude);
-        argts.push(mission.geopoints[point].longitude);
-        argts.push(mission.geopoints[point].altitude);
-      }
-      //TODO add area mission handling
-
-      const missionScript = spawn('python', argts);
-
-      Drone.findById(id, function(err, instance){
-        callback(err,instance);
+      if(err) callback(err,{});
+      var jsonfile = require('jsonfile');
+      jsonfile.readFile(
+      SIMULATOR_URL+'config.json',
+      function(err, obj) {
+        Drone.app.datasources.simulatorService
+        .startMission(
+        obj.flaskUrl,
+        drone.id,
+        drone.instance,
+        mission,
+        drone.intervention,
+        function(err, res){
+          callback(err,res);
+        });
       });
     });
   };
@@ -108,22 +124,19 @@ module.exports = function(Drone) {
   */
   Drone.afterRemote(
    'create',
-   function(ctx, unused, next){
-     const spawn = require('child_process').spawn;
-     var argts = [
-       'copter',
-       '--home=',
-       ctx.req.body.location.geopoint.latitude+','+
-       ctx.req.body.location.geopoint.longitude+','+
-       ctx.req.body.location.geopoint.altitude+',1',
-       '--intance=',
-       ctx.req.body.id
-     ];
-     const missionScript = spawn('dronekit-sitl', argts);
-     console.log(argts);
-     next();
-   }
-  );
+  function(ctx, unused, next){
+    var model = ctx.args.data;
+    var jsonfile = require('jsonfile');
+    jsonfile.readFile(
+    SIMULATOR_URL+'config.json',
+    function(err, obj) {
+    Drone.app.datasources.simulatorService
+    .createDrone(obj.flaskUrl, model.instance, model.home,
+      function(err, res){
+        next(err,res);
+      });
+    });
+  });
 
   Drone.getAskedDronesByIntervention = function (id,callback) {
     Drone.find({ where: {and: [{intervention: id}, {currentState: 'ASKED'}]} },
@@ -139,110 +152,6 @@ module.exports = function(Drone) {
     }
   );
 
-  /***
-  * Send push in case of document creation
-
-  Drone.afterRemote(
-    'create',
-    function(ctx, unused, next){
-      var topic = 'Drone/Create';
-      Drone.app.datasources.interventionService
-      .push(ctx.res.body.intervention,
-        ctx.req.body.id,
-        topic,
-        function (err, response) {
-        if (err || response.error) {
-          next(err);
-        } else {
-          next();
-        }
-      });
-    });
-
-  /***
-  * Send push in case of document modification
-  * Do not track while on a mission.
-
-  Drone.afterRemote(
-    'updateAll',
-    function(ctx, unused, next){
-
-      var topic = 'Drone/Update';
-
-      //check that the drone is not on a mission or released
-      if(ctx.res.body.mission!=null || ctx.res.body.states.released!=null){
-        next();
-      }
-
-      Drone.app.datasources.interventionService
-      .push(ctx.res.body.intervention,
-        ctx.res.body.id,
-        topic,
-        function (err, response) {
-          if (err || response.error) {
-            next(err);
-          } else {
-            next();
-          }
-        });
-      }
-    );
-
-  /***
-  * Send push in case of drone deletion
-
-  Drone.beforeRemote(
-    'updateAll',
-    function(ctx, unused, next){
-      var topic = 'Drone/Delete';
-      Drone.findById(ctx.req.body.id,{fields:{states:true}},
-        function(err,response){
-          if (err || response.error){
-            next(err);
-          }else{
-            if (ctx.req.body.states.released != null &&
-            response.states.released == null){
-              Drone.app.datasources.interventionService
-              .push(ctx.res.body.intervention,
-              ctx.res.body.id,
-              topic,
-              function (err, response) {
-                if (err || response.error) {
-                  next(err);
-                } else {
-                  next();
-                }
-              });
-            }
-          }
-        }
-      );
-    }
-  );
-
-  /***
-  * Send push in case of new mission setted for this drone
-
-  Drone.afterRemote(
-    'setMission',
-    function(ctx, unused, next){
-      var topic = 'Drone/Mission';
-      Drone.app.datasources.interventionService.push(
-      ctx.res.body.intervention,
-      ctx.res.body.id,
-      topic,
-      function (err, response) {
-        if (err || response.error) {
-          next(err);
-        } else {
-          next();
-        }
-      });
-      next();
-    }
-  );
-  */
-
   Drone.afterRemote('create',function (ctx, unused, next) {
     sendPushMessage(ctx.result, 'Drone/Create');
     next();
@@ -257,12 +166,11 @@ module.exports = function(Drone) {
     sendPushMessage(ctx.result, 'Drone/Update');
     next();
   });
-  
+
   Drone.afterRemote('deleteById',function (ctx, unused, next) {
     sendPushMessage(ctx.result, 'Drone/Delete');
     next();
   });
-
   function sendPushMessage(drone,topic){
     var pushMessage = {
       idIntervention : drone.intervention,
