@@ -131,7 +131,7 @@ module.exports = function(Drone) {
     SIMULATOR_URL+'config.json',
     function(err, obj) {
     Drone.app.datasources.simulatorService
-    .createDrone(obj.flaskUrl, model.instance, model.home,
+    .createDrone(obj.flaskUrl, model.instance, model.location,
       function(err, res){
         next(err,res);
       });
