@@ -5,6 +5,7 @@ RUN apt-get update && apt-get -y install curl python-dev python-pip python-openc
 
 RUN curl -sL https://deb.nodesource.com/setup_5.x | sudo bash -
 RUN apt-get install -y nodejs
+RUN cp /usr/share/zoneinfo/Europe/Paris /etc/localtime
 
 WORKDIR /app
 ADD . /app
