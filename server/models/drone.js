@@ -130,8 +130,10 @@ module.exports = function(Drone) {
     jsonfile.readFile(
     SIMULATOR_URL+'config.json',
     function(err, obj) {
-    Drone.app.datasources.simulatorService
-    .createDrone(obj.flaskUrl, model.instance, model.location,
+    Drone.app.datasources.simulatorService.createDrone(
+      obj.flaskUrl,
+      model.instance,
+      model.location,
       function(err, res){
         next(err,res);
       });
@@ -163,6 +165,11 @@ module.exports = function(Drone) {
   });
 
   Drone.afterRemote('updateAll',function (ctx, unused, next) {
+    sendPushMessage(ctx.result, 'Drone/Update');
+    next();
+  });
+
+  Drone.afterRemote('prototype.updateAttributes',function (ctx, unused, next) {
     sendPushMessage(ctx.result, 'Drone/Update');
     next();
   });
