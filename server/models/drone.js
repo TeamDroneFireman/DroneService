@@ -182,7 +182,7 @@ module.exports = function(Drone) {
     var pushMessage = {
       idIntervention : drone.intervention,
       idElement : drone.id,
-      timestamp : Date.now(),
+      timestamp : new Date(Date.now()),
       topic : topic
     };
     var pushService = Drone.app.datasources.pushService;
